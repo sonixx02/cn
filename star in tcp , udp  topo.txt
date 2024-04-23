@@ -55,13 +55,13 @@ set null [new Agent/NULL]
 $ns attach-agent $n3 $null
 $ns connect $udp $null
 
-$tcp set fid_1
+$tcp set fid_2
 
 set cbr [new Application/Traffic/CBR]
-$ftp attach-agent $udp
-$ftp set type_ CBR
-$ftp set packet_size 1000
-$ftp rate_ 1mb
+$cbr attach-agent $udp
+$cbr set type_ CBR
+$cbr set packet_size 1000
+$cbr rate_ 1mb
 
 
 
