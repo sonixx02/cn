@@ -1,0 +1,23 @@
+$sudo apt install tcpdump
+
+$sudo tcpdump -D
+
+
+$sudo tcpdump --interface any
+
+$sudo tcpdump -i any -c3
+
+$sudo tcpdump -i any -c3 -nn
+
+$sudo tcpdump -i any -c4 host 10.0.2.15
+
+$sudo tcpdump -i any -c3 -nn port 443
+
+$sudo tcpdump -i any -c6 udp
+
+$sudo tcpdump -i any -c6 -nn host 10.0.2.15 and port 443
+
+$sudo tcpdump -i any -c5 -w packetData.pcap
+
+
+$tcpdump -r packetData.pcap

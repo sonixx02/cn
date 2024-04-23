@@ -1,0 +1,67 @@
+# Create a new simulation instance
+set ns [new Simulator]
+
+# Set the routing protocol to Link State (LSR)
+set rtproto LS
+
+# Open the nam trace file
+set nf [open prac1.nam w]
+$ns namtrace-all $nf
+
+# Procedure to finish and close the simulation
+proc finish {} {
+    global ns nf
+    $ns flush-trace
+    close $nf
+    exec nam prac1.nam w &
+    exit 0
+}
+
+# Create nodes
+set n0 [$ns node]
+set n1 [$ns node]
+set n2 [$ns node]
+set n3 [$ns node]
+
+# Create duplex links between nodes
+$ns duplex-link $n0 $n1 10Mb 10ms DropTail
+$ns duplex-link $n1 $n2 10Mb 10ms DropTail
+$ns duplex-link $n2 $n3 10Mb 10ms DropTail
+$ns duplex-link $n3 $n0 10Mb 10ms DropTail
+$ns duplex-link $n1 $n3 10Mb 10ms DropTail
+$ns duplex-link $n0 $n2 10Mb 10ms DropTail
+
+# Set link orientations (optional)
+$ns duplex-link-op $n0 $n1 orient right
+$ns duplex-link-op $n1 $n2 orient down 
+$ns duplex-link-op $n2 $n3 orient left
+$ns duplex-link-op $n3 $n0 orient up 
+$ns duplex-link-op $n1 $n3 orient left-down 
+$ns duplex-link-op $n0 $n2 orient right-down
+
+# Set up TCP connection between nodes n0 and n2
+set tcp [new Agent/TCP]
+$tcp set class_ 2
+$ns attach-agent $n0 $tcp
+set sink [new Agent/TCPSink]
+$ns attach-agent $n2 $sink
+$ns connect $tcp $sink
+
+# Set up FTP application
+set ftp [new Application/FTP]
+$ftp attach-agent $tcp
+$ftp set type_ FTP
+$ftp set packet_size 1000
+$ftp rate_ 1mb
+
+# Start FTP transmission at time 1.0
+$ns at 1.0 "$ftp start"
+
+# Stop FTP transmission at time 4.0
+$ns at 4.0 "ftp stop"
+
+# Finish simulation at time 5.0
+$ns at 5.0 "finish"
+
+# Run the simulation
+$ns run
